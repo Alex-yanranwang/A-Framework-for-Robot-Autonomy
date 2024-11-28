@@ -1,10 +1,9 @@
-# Baseline-framework-and-tutorial-for-an-autonomous-drone
-Autonomous navigation for a drone (quadrotor) - a comprehensive framework integrating vision inertial odometry, trajectory planning and tracking control.
-(Before the following toturials please refer to the hardware_list.xlsx to see the specific hardware firstly)
+# Baseline-framework-and-tutorial-for-an-autonomous-robot
+Autonomous navigation for an (aerial) robot - a comprehensive framework integrating vision inertial odometry, trajectory planning and tracking control.
 
 ## Algorithms and Papers
 The whole framework includes Kinodynamic path planning and B-spline-based trajectory optimization. This toturial builds on several papers (algorithms):
-- [__KinoJGM: A framework for efficient and accurate quadrotor trajectory generation and tracking in dynamic environments__](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9812352&casa_token=NtGx-UFm0XIAAAAA:tsefk1JEYnOmA4zo6nku67lRrie3bVqvYzDVn4SF3vMjR4bEvxSipUJUl8nve70Po51UH95ZNA&tag=1), Wang, Yanran, James O'Keeffe, Qiuchen Qian, and David Boyle, IEEE International Conference on Robotics and Automation (__ICRA__), 2022.
+- [__KinoJGM: A framework for efficient and accurate robot trajectory generation and tracking in dynamic environments__](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9812352&casa_token=NtGx-UFm0XIAAAAA:tsefk1JEYnOmA4zo6nku67lRrie3bVqvYzDVn4SF3vMjR4bEvxSipUJUl8nve70Po51UH95ZNA&tag=1), Wang, Yanran, James O'Keeffe, Qiuchen Qian, and David Boyle, IEEE International Conference on Robotics and Automation (__ICRA__), 2022.
 - [__Ego-planner: An esdf-free gradient-based local planner for quadrotors__](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9309347&casa_token=T80lv299Sz8AAAAA:ytNanEEBCMYHoH3iJdWG5m8dgDFWIFdbsPHzkiEsSPHfu4wWVXAappiRoxgmDXvKXl2AP3LhEQ), Zhou, Xin, Zhepei Wang, Hongkai Ye, Chao Xu, and Fei Gao, IEEE Robotics and Automation Letters (__R-AL__), 2020.
 
 ## Flight Controller, Specifically Pixhawk 4 (mini), Setup
@@ -69,12 +68,12 @@ There is no need to configure `SYS_USE_IO` for Pixhawk 6C. It does not exist and
   - Run `sudo make install` to install Ceres.
   - Install `ros-noetic-ddynamic-reconfigure`: `sudo apt-get install ros-noetic-ddynamic-reconfigure`.
 - **Download the Trajectory Planner Code and Compile**
-  - Clone the Ego-Planner repository: `https://github.com/Alex-yanranwang/Sysal-Autonomous-Drone.git`.
-  - Navigate to the repository directory: `cd Sysal-autonomous-drone`.
+  - Clone the Ego-Planner repository: `https://github.com/Alex-yanranwang/A-Framework-for-Robot-Autonomy.git`.
+  - Navigate to the repository directory: `cd A-Framework-for-Robot-Autonomy`.
   - Run `catkin_make` to compile the code.
   - Source the workspace setup file: `source devel/setup.bash`.
   - Launch the simulation: `roslaunch ego_planner single_run_in_sim.launch`.
-  - Press the `G` key on the keyboard in Rviz, then click the left mouse button to select the target point for the drone.
+  - Press the `G` key on the keyboard in Rviz, then click the left mouse button to select the target point for the robot.
 
 ## Installation on the tools of network communication and configration
 - **VSCode Installation**
@@ -85,9 +84,9 @@ There is no need to configure `SYS_USE_IO` for Pixhawk 6C. It does not exist and
   - Install OpenSSH server: `sudo apt install openssh-server`.
   - On your PC/notebook, ping the IP address `192.168.**.**`.
   - Open the hosts file: `sudo gedit /etc/hosts`.
-  - Add the following line at the end: `192.168.**.** sysal-autonomous-drone`.
-  - Ping the hostname: `ping sysal-autonomous-drone`.
-  - Connect to the remote host via SSH: `ssh sysal-autonomous-drone@sysal-autonomous-drone` (`ssh username@alias`).
+  - Add the following line at the end: `192.168.**.** A-Framework-for-Robot-Autonomy`.
+  - Ping the hostname: `ping A-Framework-for-Robot-Autonomy`.
+  - Connect to the remote host via SSH: `ssh A-Framework-for-Robot-Autonomy@A-Framework-for-Robot-Autonomy` (`ssh username@alias`).
 - **ROS Multiple Machines Configuration** 
   - Purpose:
     - Decrease the computation pressure on on-board computers.
@@ -111,12 +110,12 @@ There is no need to configure `SYS_USE_IO` for Pixhawk 6C. It does not exist and
   - Check the `realflight_modules/VINS_Fusion/config/` folder.
   - Obtain `fx`, `fy`, `cx`, and `cy` values from `rostopic echo /camera/infra1/camera_info` and fill in `left.yaml` and `right.yaml` in the same folder.
   - Create a `vins_output` folder in the home directory.
-  - Modify the `sysal-drone.yaml` file. Adjust the fourth column of `data` in `body_T_cam0` and `body_T_cam1` to match the actual extrinsic parameters of your drone's camera relative to the flight controller, in meters.
+  - Modify the `sysal-robot.yaml` file. Adjust the fourth column of `data` in `body_T_cam0` and `body_T_cam1` to match the actual extrinsic parameters of your robot's camera relative to the flight controller, in meters.
 - **Accurate self-calibration of VINS external parameters**
   - Run `sh shfiles/rspx4.sh`.
   - Listen to the topic `/vins_fusion/imu_propagate` using `rostopic echo`.
   - Slowly move the robot in the field while picking it up. Avoid changing lighting conditions or using flickering light sources. Add clutter to increase feature points for VINS matching.
-  - Replace the content in `vins_output/extrinsic_parameter.txt` with the values of `body_T_cam0` and `body_T_cam1` from `sysal-drone.yaml`.
+  - Replace the content in `vins_output/extrinsic_parameter.txt` with the values of `body_T_cam0` and `body_T_cam1` from `sysal-robot.yaml`.
   - Repeat the above steps until the odometer data deviation of VINS converges to a satisfactory value (usually within 0.3 meters).
 - **Mapping test**
   - Run `sh shfiles/rspx4.sh`.
@@ -133,9 +132,9 @@ There is no need to configure `SYS_USE_IO` for Pixhawk 6C. It does not exist and
   - `resolution`: Represents the resolution of the grid points in the raster map, in meters. Smaller values result in a finer map but require more memory. The minimum should not be lower than 0.1.
   - `obstacles_inflation`: Represents the expansion size of the obstacle, in meters. It is recommended to set it at least 1.5 times the radius of the aircraft (including the propeller), but not more than 4 times the `resolution`. If the wheelbase of the aircraft is larger, please increase the `resolution`.
 - **Navigate to the route `src/realflight_modules/px4ctrl/config/ctrl_param_fpv.yaml`**
-  - `mass`: Actual weight of the drone.
-  - `hover_percent`: The hovering throttle of the drone. It can be viewed through px4log. For details, please refer to the [document](https://www.bookstack.cn/read/px4-user-guide/zh-log-flight_review.md). If your drone is the same as the course, keep this at 0.3. If the power configuration, weight, or wheelbase is changed, please adjust this parameter. Otherwise, automatic takeoff may fail or there may be significant overshoot.
-  - `gain/Kp,Kv`: P and I values of the PID controller. Generally, no major changes are required. If overshoot occurs, please adjust them appropriately. If the drone responds slowly, please adjust them accordingly.
+  - `mass`: Actual weight of the robot.
+  - `hover_percent`: The hovering throttle of the robot. It can be viewed through px4log. For details, please refer to the [document](https://www.bookstack.cn/read/px4-user-guide/zh-log-flight_review.md). If your robot is the same as the course, keep this at 0.3. If the power configuration, weight, or wheelbase is changed, please adjust this parameter. Otherwise, automatic takeoff may fail or there may be significant overshoot.
+  - `gain/Kp,Kv`: P and I values of the PID controller. Generally, no major changes are required. If overshoot occurs, please adjust them appropriately. If the robot responds slowly, please adjust them accordingly.
   - `rc_reverse`: No changes are required if using AT9S. If the flight direction of the aircraft is opposite to the direction of the joystick, modify this parameter. Change the value corresponding to the opposite channel to `true`. Please confirm the throttle before taking off:
     - Launch `roslaunch mavros px4.launch`.
     - Run `rostopic echo /mavros/rc/in`.
@@ -151,15 +150,15 @@ There is no need to configure `SYS_USE_IO` for Pixhawk 6C. It does not exist and
   - Slowly move the robot in a small range and put it back in place, ensuring VINS has a small deviation.
   - Set channel 5 of the RC to the inside and channel 6 to the lower side. Keep the throttle centered.
   - Launch the PX4 controller: `roslaunch px4ctrl run_ctrl.launch`.
-  - Run `sh shfiles/takeoff.sh`. Adjust the `hover_percent` parameter if the drone cannot take off or if it flies over 1 meter before descending.
-  - Control the position of the drone using the controls similar to DJI.
-  - To land, set the throttle to the lowest level. After the drone is on the ground, set channel 
+  - Run `sh shfiles/takeoff.sh`. Adjust the `hover_percent` parameter if the robot cannot take off or if it flies over 1 meter before descending.
+  - Control the position of the robot using the controls similar to DJI.
+  - To land, set the throttle to the lowest level. After the robot is on the ground, set channel 
 - **Real Flight experiments**
   - Automatic takeoff (see the steps above)
   - Launch trajectory planning: `roslaunch ego-planner single_run_in_exp.launch`
   - Record the flight data in preception and planning processes: `sh shfiles/record.sh`
   - Enter remote desktop (base on the above installation of ROS Multiple Machine), `roslaunch ego_planner rviz.launch`
-  - Press the G key and the left mouse button to click the target point to make the drone fly
+  - Press the G key and the left mouse button to click the target point to make the robot move
 
 ## Potential Issues & Answers during Practical Impementation
 - **Can I use 265+435 to run VINS without issues?**
@@ -185,7 +184,7 @@ There is no need to configure `SYS_USE_IO` for Pixhawk 6C. It does not exist and
   - Most likely, the error is due to a formatting issue in the modified configuration. Check the error message and make the corresponding changes in the configuration file.
 
 - **After running VINS, I see the error "VINS_RESULT_PATH not opened." What should I do?**
-  - Create a folder named "vins_output" in your home directory (if your username is not "sysal-drone," modify the "vins_out_path" in the config file to the absolute path of the folder you created).
+  - Create a folder named "vins_output" in your home directory (if your username is not "A-Framework-for-Robot-Autonomy," modify the "vins_out_path" in the config file to the absolute path of the folder you created).
 
 - **What is the flight range of this aircraft?**
   - The range it can fly depends on the communication quality of your Wi-Fi. Typically, Wi-Fi can communicate up to a maximum of 100 meters. Additionally, since the grid map is directly loaded into memory, setting the map size too large can easily fill up the memory and cause other programs to run slowly. It is generally not recommended to exceed 50 meters by 50 meters.
@@ -195,7 +194,7 @@ There is no need to configure `SYS_USE_IO` for Pixhawk 6C. It does not exist and
 
 - **What should I do if VINS drifts?**
   - Check if there are strong reflective objects (tiles, glass, etc.) in the environment.
-  - Move the drone slowly and try to avoid moving objects in the scene.
+  - Move the robot slowly and try to avoid moving objects in the scene.
   - Measure the initial extrinsic parameters as accurately as possible.
   - Avoid running RVIZ on a remote desktop while VINS is running (it consumes a lot of CPU resources). If necessary, consider setting up ROS multi-machine and running it on a laptop.
   - Check if there are flickering light sources in the environment (not visible to the naked eye, but can be checked in the monocular image of Realsense).
